@@ -1,0 +1,26 @@
+{
+    "name": "puppeteer-marks-notifier",
+    "version": "1.0.0",
+    "description": "Web scraper to notify new marks on Planete INSA Lyon platorm",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "node index.js"
+    },
+    "keywords": [
+        "puppeteer",
+        "scraping",
+        "planete",
+        "marks"
+    ],
+    "author": "Alexandre ROUSSEL",
+    "license": "MIT",
+    "dependencies": {
+        "dotenv": "^5.0.1",
+        "puppeteer": "^1.20.0"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/alexroussel/alerTC"
+    }
+}
