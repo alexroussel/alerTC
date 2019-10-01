@@ -83,6 +83,9 @@ const PLANETE_PASSWORD = process.env.PLANETE_PASSWORD;
                 ' et un écart-type de : ' + missing_marks[i].sd);
         }
     }
+    else{
+        await browser.close()
+    }
     
     // MESSENGER
     await page.goto('https://www.messenger.com/', { waitUntil: 'networkidle2' });
@@ -102,8 +105,12 @@ const PLANETE_PASSWORD = process.env.PLANETE_PASSWORD;
 
     await page.goto(MESSENGER_URL, { waitUntil: 'networkidle2' });
 
-    await page.type('._1p1t', 'test');
-    await page.keyboard.press('Enter');
+    for(let i = 0; i < missing_marks.length; i++){
+        await page.type('._1p1t', 'Nouvelle note ajoutée : ' + missing_marks[i].name +
+        ' avec une moyenne de : ' + missing_marks[i].average +
+        ' et un écart-type de : ' + missing_marks[i].sd);
+        await page.keyboard.press('Enter');
+    }
     await browser.close()
 })();
 
