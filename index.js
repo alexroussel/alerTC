@@ -1,6 +1,7 @@
 require('dotenv').config();
 const puppeteer = require('puppeteer');
 
+// Fill in .env file
 const FACEBOOK_EMAIL = process.env.FACEBOOK_EMAIL;
 const FACEBOOK_PASSWORD = process.env.FACEBOOK_PASSWORD;
 
@@ -33,6 +34,21 @@ const PLANETE_PASSWORD = process.env.PLANETE_PASSWORD;
 
     await page.goto('https://planete.insa-lyon.fr/uPortal/f/for/normal/render.uP?pCt=scolarix-portlet.u18l1n13&pP_action=notes', { waitUntil: 'networkidle2' });
 
+    const elts = await page.$$eval('.ec-exam', elts => elts.map(elt => elt.textContent.replace(/(\t)/gm, "")));
+    let marks = elts.map(elt => elt.split('\n'));
+    let results = [];
+    for(let i = 0; i < marks.length; i++){
+        let name = marks[i][1];
+        if(name == 'examen'){
+            continue;
+        }
+        let mark = marks[i][5];
+        let average = marks[i][6];
+        let sd = marks[i][7];
+        results.push({name: name, mark: mark, average: average, sd: sd});
+    }
+    console.log(results);
+    
     // MESSENGER
     await page.goto('https://www.messenger.com/', { waitUntil: 'networkidle2' });
 
