@@ -1,5 +1,6 @@
 require('dotenv').config();
 const puppeteer = require('puppeteer');
+const fs = require('fs');
 
 // Fill in .env file
 const FACEBOOK_EMAIL = process.env.FACEBOOK_EMAIL;
@@ -35,19 +36,53 @@ const PLANETE_PASSWORD = process.env.PLANETE_PASSWORD;
     await page.goto('https://planete.insa-lyon.fr/uPortal/f/for/normal/render.uP?pCt=scolarix-portlet.u18l1n13&pP_action=notes', { waitUntil: 'networkidle2' });
 
     const elts = await page.$$eval('.ec-exam', elts => elts.map(elt => elt.textContent.replace(/(\t)/gm, "")));
-    let marks = elts.map(elt => elt.split('\n'));
-    let results = [];
-    for(let i = 0; i < marks.length; i++){
-        let name = marks[i][1];
+    let results = elts.map(elt => elt.split('\n'));
+    let marks = [];
+    for(let i = 0; i < results.length; i++){
+        let name = results[i][1];
         if(name == 'examen'){
             continue;
         }
-        let mark = marks[i][5];
-        let average = marks[i][6];
-        let sd = marks[i][7];
-        results.push({name: name, mark: mark, average: average, sd: sd});
+        let mark = results[i][5];
+        let average = results[i][6];
+        let sd = results[i][7];
+        marks.push({name: name, mark: mark, average: average, sd: sd});
     }
-    console.log(results);
+    
+    let fileContent = fs.readFileSync('./marks.txt', {flag: 'a+', encoding: 'utf8'});
+
+    // Initiliaze to 0 for firt start
+    let marks_parsed = 0;
+    try{
+        marks_parsed = JSON.parse(fileContent);
+    } catch(e){
+        console.error('Parsing error', e);
+    }
+
+    let missing_marks = [];
+    if(marks.length != marks_parsed.length){
+        for(let i = 0; i < marks.length; i++){
+            let test = false;
+            for(let j = 0; j < marks_parsed.length; j++){
+                if(marks[i].name == marks_parsed[j].name){
+                    test = true;
+                    break;
+                }
+            }
+            if(test == false){
+                missing_marks.push({name: marks[i].name, mark: marks[i].mark, average: marks[i].average, sd: marks[i].sd});
+            }
+        }
+        fs.writeFileSync('./marks.txt', JSON.stringify(marks, {flag : 'w', encoding : 'utf8'}));
+    }
+
+    if(missing_marks.length != 0){
+        for(let i = 0; i < missing_marks.length; i++){
+            console.log('Nouvelle note ajoutée : ' + missing_marks[i].name +
+                ' avec une moyenne de : ' + missing_marks[i].average +
+                ' et un écart-type de : ' + missing_marks[i].sd);
+        }
+    }
     
     // MESSENGER
     await page.goto('https://www.messenger.com/', { waitUntil: 'networkidle2' });
