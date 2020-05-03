@@ -6,7 +6,8 @@ const fs = require('fs');
 const FACEBOOK_EMAIL = process.env.FACEBOOK_EMAIL;
 const FACEBOOK_PASSWORD = process.env.FACEBOOK_PASSWORD;
 
-const MESSENGER_URL = process.env.MESSENGER_URL;
+const MESSENGER_CONV_URL = process.env.MESSENGER_CONV_URL;
+const PLANETE_MARKS_URL = process.env.PLANETE_MARKS_URL;
 
 const PLANETE_USERNAME = process.env.PLANETE_USERNAME;
 const PLANETE_PASSWORD = process.env.PLANETE_PASSWORD;
@@ -34,7 +35,7 @@ const PLANETE_PASSWORD = process.env.PLANETE_PASSWORD;
         // End Wait
         await navigationPlanetePromise;
 
-        await page.goto('https://planete.insa-lyon.fr/uPortal/f/for/normal/render.uP?pCt=scolarix-portlet.u18l1n13&pP_action=notes', { waitUntil: 'networkidle2' });
+        await page.goto(PLANETE_MARKS_URL, { waitUntil: 'networkidle2' });
         const elts = await page.$$eval('.ec-exam', elts => elts.map(elt => elt.textContent.replace(/(\t)/gm, "")));
         let results = elts.map(elt => elt.split('\n'));
         let marks = [];
@@ -103,7 +104,7 @@ const PLANETE_PASSWORD = process.env.PLANETE_PASSWORD;
 
         await navigationFacebookPromise;
 
-        await page.goto(MESSENGER_URL, { waitUntil: 'networkidle2' });
+        await page.goto(MESSENGER_CONV_URL, { waitUntil: 'networkidle2' });
 
         for(let i = 0; i < missing_marks.length; i++){
             await page.type('._1p1t', 'Nouvelle note ajoutée : ' + missing_marks[i].name +
