@@ -14,8 +14,9 @@ const PLANETE_PASSWORD = process.env.PLANETE_PASSWORD;
 
 (async () => {
     try{
-        const browser = await puppeteer.launch();
+        const browser = await puppeteer.launch({slowMo: 50});
         const page = await browser.newPage();
+        page.setUserAgent('Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.0 Safari/537.36');
         page.setViewport({ width: 1280, height: 720 });
 
         // PLANETE
@@ -79,13 +80,13 @@ const PLANETE_PASSWORD = process.env.PLANETE_PASSWORD;
 
         if(missing_marks.length != 0){
             for(let i = 0; i < missing_marks.length; i++){
-                console.log('Nouvelle note ajoutée : ' + missing_marks[i].name +
+                console.log('Nouvelle note : ' + missing_marks[i].name +
                 ' avec une moyenne de : ' + missing_marks[i].average +
                 ' et un écart-type de : ' + missing_marks[i].sd);
             }
         }
         else{
-            await browser.close()
+            await browser.close();
         }
 
         // MESSENGER
@@ -107,7 +108,7 @@ const PLANETE_PASSWORD = process.env.PLANETE_PASSWORD;
         await page.goto(MESSENGER_CONV_URL, { waitUntil: 'networkidle2' });
 
         for(let i = 0; i < missing_marks.length; i++){
-            await page.type('._1p1t', 'Nouvelle note ajoutée : ' + missing_marks[i].name +
+            await page.type('._1p1t', 'Nouvelle note : ' + missing_marks[i].name +
             ' avec une moyenne de : ' + missing_marks[i].average +
             ' et un écart-type de : ' + missing_marks[i].sd);
             await page.keyboard.press('Enter');
