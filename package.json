@@ -16,8 +16,8 @@
     "author": "Alexandre ROUSSEL",
     "license": "MIT",
     "dependencies": {
-        "dotenv": "^5.0.1",
-        "puppeteer": "^1.20.0"
+        "dotenv": "^8.2.0",
+        "puppeteer": "^3.0.2"
     },
     "repository": {
         "type": "git",
