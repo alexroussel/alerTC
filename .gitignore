@@ -1,4 +1,10 @@
-node_modules/
+# Useless mac stuff
+.DS_Store
+
+# node
+node_modules
+package-lock.json
+
+# Secret information
 .env
 marks.txt
-.DS_Store
