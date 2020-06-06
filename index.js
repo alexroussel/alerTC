@@ -1,6 +1,6 @@
 require('dotenv').config();
 const puppeteer = require('puppeteer');
-const fs = require('fs');
+const fs = require('fs').promises;
 
 // Fill in .env file
 const FACEBOOK_EMAIL = process.env.FACEBOOK_EMAIL;
@@ -14,7 +14,7 @@ const PLANETE_PASSWORD = process.env.PLANETE_PASSWORD;
 
 (async () => {
     try{
-        const browser = await puppeteer.launch({slowMo: 50});
+        const browser = await puppeteer.launch({slowMo: 50, headless: true});
         const page = await browser.newPage();
         page.setUserAgent('Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.0 Safari/537.36');
         page.setViewport({ width: 1280, height: 720 });
@@ -51,8 +51,8 @@ const PLANETE_PASSWORD = process.env.PLANETE_PASSWORD;
             marks.push({name: name, mark: mark, average: average, sd: sd});
         }
 
-        let fileContent = fs.readFileSync('./marks.txt', {flag: 'a+', encoding: 'utf8'});
-        
+        let fileContent = await fs.readFile('./marks.txt', {flag: 'a+', encoding: 'utf8'});
+
         // Initiliaze to 0 for firt start
         let marks_parsed = 0;
         try{
@@ -75,7 +75,7 @@ const PLANETE_PASSWORD = process.env.PLANETE_PASSWORD;
                     missing_marks.push({name: marks[i].name, mark: marks[i].mark, average: marks[i].average, sd: marks[i].sd});
                 }
             }
-            fs.writeFileSync('./marks.txt', JSON.stringify(marks, {flag : 'w', encoding : 'utf8'}));
+            await fs.writeFile('./marks.txt', JSON.stringify(marks, {flag : 'w', encoding : 'utf8'}));
         }
 
         if(missing_marks.length != 0){
